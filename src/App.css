@@ -1,0 +1,231 @@
+/* src/App.css */
+
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background: url('C:\Users\Priti Gaikwad\Documents\Project\public\recal-media-ueBIGLmiI5A-unsplash.jpg');
+  
+  background-size: cover;
+  color: #333;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  background-color: #343a40;
+  color: white;
+  height: 60px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.navbar:hover {
+  background-color: #495057;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.navbar-left, .navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-center {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.navbar-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #f8f9fa;
+  
+  transition: color 0.3s, transform 0.3s;
+}
+
+.navbar-title:hover {
+  color: #007bff;
+  transform: scale(1.05);
+}
+
+.nav-link {
+  color: #f8f9fa;
+  text-decoration: none;
+  margin: 0 10px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s, transform 0.3s;
+}
+
+.nav-link:hover {
+  background-color: #495057;
+  color: #e9ecef;
+  transform: translateY(-2px);
+}
+
+.back-button {
+  background: none;
+  border: none;
+  color: #f8f9fa;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color 0.3s, transform 0.3s;
+}
+
+.back-button:hover {
+  color: #007bff;
+  transform: scale(1.1);
+}
+
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 60px);
+  text-align: center;
+  /* background: rgba(255, 255, 255, 0.9); */
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.home-container:hover {
+  /* background: rgba(255, 255, 255, 1); */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.welcome-title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #007bff;
+  transition: transform 0.6s ease-in-out, color 0.3s;
+}
+
+.welcome-title:hover {
+  transform: scale(1.1);
+  color: #0056b3;
+}
+
+.home-links {
+  margin-top: 30px;
+}
+
+.home-link {
+  display: inline-block;
+  margin: 10px 20px;
+  padding: 15px 25px;
+  color: white;
+  background-color: #007bff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+.home-link:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.error-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 60px);
+  text-align: center;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.error-page:hover {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.error-page h1 {
+  font-size: 5rem;
+  color: #dc3545;
+  transition: color 0.3s;
+}
+
+.error-page p {
+  font-size: 1.8rem;
+}
+
+.error-link {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 24px;
+  color: white;
+  background-color: #007bff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+.error-link:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    height: auto;
+    padding: 10px;
+  }
+
+  .navbar-left, .navbar-right {
+    margin: 5px 0;
+  }
+
+  .navbar-center {
+    margin: 10px 0;
+  }
+
+  .home-container {
+    padding: 20px;
+  }
+
+  .welcome-title {
+    font-size: 2.5rem;
+  }
+
+  .home-link {
+    margin: 8px 15px;
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+
+  .error-page {
+    padding: 20px;
+  }
+
+  .error-page h1 {
+    font-size: 3rem;
+  }
+
+  .error-link {
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+}
