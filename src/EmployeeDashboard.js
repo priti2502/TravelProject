@@ -1,6 +1,5 @@
-// src/EmployeeDashboard.js
-
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './EmployeeDashboard.css';
 
 function EmployeeDashboard() {
@@ -21,9 +20,18 @@ function EmployeeDashboard() {
   });
 
   useEffect(() => {
-    const storedRequests = JSON.parse(localStorage.getItem('travelRequests')) || [];
-    setTravelRequests(storedRequests);
+    fetchTravelRequests();
   }, []);
+
+  const fetchTravelRequests = async () => {
+    try {
+      const response = await axios.get('https://localhost:7041/api/TravelRequest');
+      console.log('Fetched Requests:', response.data); // Log fetched requests
+      setTravelRequests(response.data);
+    } catch (error) {
+      console.error('Error fetching travel requests:', error);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -36,33 +44,48 @@ function EmployeeDashboard() {
     setNewRequest({ ...newRequest, [name]: file });
   };
 
-  const submitTravelRequest = (e) => {
+  const submitTravelRequest = async (e) => {
     e.preventDefault();
-    const requestWithId = { ...newRequest, id: Date.now(), status: 'Pending', comments: '' };
-    const updatedRequests = [...travelRequests, requestWithId];
-    setTravelRequests(updatedRequests);
-    localStorage.setItem('travelRequests', JSON.stringify(updatedRequests));
-
-    setNewRequest({
-      employeeId: '',
-      employeeName: '',
-      projectName: '',
-      departmentName: '',
-      travelReason: '',
-      bookingType: '',
-      travelDate: '',
-      aadharCard: '',
-      passportNumber: '',
-      visaFile: null,
-      daysOfStay: '',
-      mealPreference: '',
+    const formData = new FormData();
+    Object.keys(newRequest).forEach((key) => {
+      if (newRequest[key] !== undefined && newRequest[key] !== null) {
+        formData.append(key, newRequest[key]);
+      }
     });
+
+    try {
+      await axios.post('https://localhost:7041/api/TravelRequest', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      fetchTravelRequests(); // Refresh the list of requests
+      setNewRequest({
+        employeeId: '',
+        employeeName: '',
+        projectName: '',
+        departmentName: '',
+        travelReason: '',
+        bookingType: '',
+        travelDate: '',
+        aadharCard: '',
+        passportNumber: '',
+        visaFile: null,
+        daysOfStay: '',
+        mealPreference: '',
+      });
+    } catch (error) {
+      console.error('Error submitting travel request:', error);
+    }
   };
 
-  const deleteRequest = (id) => {
-    const updatedRequests = travelRequests.filter((request) => request.id !== id);
-    setTravelRequests(updatedRequests);
-    localStorage.setItem('travelRequests', JSON.stringify(updatedRequests));
+  const deleteRequest = async (id) => {
+    try {
+      await axios.delete(`https://localhost:7041/api/TravelRequest/${id}`);
+      fetchTravelRequests(); // Refresh the list of requests
+    } catch (error) {
+      console.error('Error deleting travel request:', error);
+    }
   };
 
   return (

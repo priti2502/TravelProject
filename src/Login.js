@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './Login.css';
 
 const Login = () => {
     const [formData, setFormData] = useState({ Email: '', Password: '' });
@@ -23,7 +24,7 @@ const Login = () => {
 
             if (response.status === 200) {
                 const { roleId} = response.data; 
-                
+                console.log(roleId)
                 
                 if (roleId === 4) {
                     navigate('/dashboard/employee'); 
@@ -43,32 +44,44 @@ const Login = () => {
     };
 
     return (
-        <div>
-            <h1>Login Page</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Email:</label>
+        <div className="login-container">
+            <div className="login-card">
+                <h1 className="login-title">Login Page</h1>
+                <div className="input-group">
+                    <label htmlFor="Email" className="input-label">
+                        <i className="fas fa-envelope"></i>
+                        Email
+                    </label>
                     <input
                         type="email"
                         name="Email"
+                        id="Email"
                         value={formData.Email}
                         onChange={handleChange}
+                        className="input-field"
                         required
                     />
                 </div>
-                <div>
-                    <label>Password:</label>
+                <div className="input-group">
+                    <label htmlFor="Password" className="input-label">
+                        <i className="fas fa-lock"></i>
+                        Password
+                    </label>
                     <input
                         type="password"
                         name="Password"
+                        id="Password"
                         value={formData.Password}
                         onChange={handleChange}
+                        className="input-field"
                         required
                     />
                 </div>
-                <button type="submit">Login</button>
-            </form>
-            {message && <p>{message}</p>}
+                <button onClick={handleSubmit} className="login-button">
+                    Login
+                </button>
+                {message && <p className="error-message">{message}</p>}
+            </div>
         </div>
     );
 };

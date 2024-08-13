@@ -5,33 +5,37 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background: url('C:\Users\Priti Gaikwad\Documents\Project\public\recal-media-ueBIGLmiI5A-unsplash.jpg');
-  
+  background: url('/public/assets/img1.jpg') no-repeat center center fixed;
   background-size: cover;
   color: #333;
-  transition: background-color 0.3s, color 0.3s;
 }
 
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  padding-top: 70px; /* Add space for fixed Navbar */
 }
 
 .navbar {
+  position: fixed; /* Make Navbar fixed at the top */
+  top: 0;
+  left: 0;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 20px;
-  background-color: #343a40;
+  background-color: #2c3e50; /* Slate Gray */
   color: white;
-  height: 60px;
+  height: 70px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   transition: background-color 0.3s, box-shadow 0.3s;
+  z-index: 1000; /* Ensure it stays above other content */
 }
 
 .navbar:hover {
-  background-color: #495057;
+  background-color: #34495e; /* Slightly darker Slate Gray */
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
 }
 
@@ -48,18 +52,17 @@ body {
 .navbar-title {
   font-size: 2rem;
   font-weight: bold;
-  color: #f8f9fa;
-  
+  color: #FFD700; /* Misty Blue */
   transition: color 0.3s, transform 0.3s;
 }
 
 .navbar-title:hover {
-  color: #007bff;
+  color: #F0F8FF; /* Sunlit Gold */
   transform: scale(1.05);
 }
 
 .nav-link {
-  color: #f8f9fa;
+  color: #ecf0f1; /* Misty Blue */
   text-decoration: none;
   margin: 0 10px;
   padding: 8px 16px;
@@ -68,54 +71,108 @@ body {
 }
 
 .nav-link:hover {
-  background-color: #495057;
-  color: #e9ecef;
+  background-color: #34495e; /* Slightly darker Slate Gray */
+  color: #F0F8FF; /* Misty Blue */
   transform: translateY(-2px);
 }
 
 .back-button {
   background: none;
   border: none;
-  color: #f8f9fa;
+  color: #F0F8FF; /* Misty Blue */
   font-size: 1.1rem;
   cursor: pointer;
   transition: color 0.3s, transform 0.3s;
 }
 
 .back-button:hover {
-  color: #007bff;
+  color: #FFD700; /* Sunlit Gold */
   transform: scale(1.1);
 }
 
+/* src/Home.css */
+
 .home-container {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: calc(100vh - 60px);
+  height: 100vh; /* Full viewport height */
+  background-image: url('/public/assets/img6.jpg'); /* Ensure this path is correct */
+  background-size: cover;
+  background-position: center;
+}
+
+.carousel-container {
+  position: relative;
+  width: 800%; /* Adjust width as needed */
+  max-width: 800px; /* Maximum width for larger screens */
+  height: 500px; /* Adjust height as needed */
+  overflow: hidden;
+  border-radius: 15px; /* Circular corners */
+}
+
+.carousel {
+  height: 100%;
+}
+
+.carousel img {
+  object-fit: cover;
+  height: 100%;
+}
+
+.carousel-caption {
+  position: relative;
+  bottom: 180px;
+  left: 50%;
+  margin-top: 10px;
+  transform: translateX(-50%);
+  color: #f8f9fa;
   text-align: center;
-  /* background: rgba(255, 255, 255, 0.9); */
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  transition: background 0.3s, box-shadow 0.3s;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  border-radius: 8px;
+}
+
+/* Style for carousel control arrows */
+.carousel-control-prev,
+.carousel-control-next {
+  width: 5%; /* Adjust as needed */
+  color: #f8f9fa;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background for arrows */
+  border-radius: 50%;
+}
+
+.carousel-control-prev-icon::before,
+.carousel-control-next-icon::before {
+  font-size: 2rem; /* Adjust size as needed */
 }
 
 .home-container:hover {
-  /* background: rgba(255, 255, 255, 1); */
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
 .welcome-title {
-  font-size: 3rem;
+  font-size: 2rem;
   font-weight: bold;
-  color: #007bff;
+  color: #FFD700; /* Sunlit Gold */
   transition: transform 0.6s ease-in-out, color 0.3s;
 }
 
 .welcome-title:hover {
   transform: scale(1.1);
-  color: #0056b3;
+  color: #FFA500; /* Darker Gold */
+}
+
+.travel-description {
+  font-size: 1.2rem;
+  max-width: 800px;
+  margin: 20px auto;
+  line-height: 1.6;
+  padding: 0 15px;
 }
 
 .home-links {
@@ -127,7 +184,7 @@ body {
   margin: 10px 20px;
   padding: 15px 25px;
   color: white;
-  background-color: #007bff;
+  background-color: #228B22; /* Forest Green */
   text-decoration: none;
   border-radius: 6px;
   font-size: 1.2rem;
@@ -135,7 +192,7 @@ body {
 }
 
 .home-link:hover {
-  background-color: #0056b3;
+  background-color: #1e7d1e; /* Darker Forest Green */
   transform: scale(1.05);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
@@ -145,7 +202,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: calc(100vh - 60px);
+  height: calc(100vh - 70px); /* Adjust for Navbar height */
   text-align: center;
   background: rgba(255, 255, 255, 0.9);
   border-radius: 12px;
@@ -174,7 +231,7 @@ body {
   margin-top: 20px;
   padding: 12px 24px;
   color: white;
-  background-color: #007bff;
+  background-color: #708090; /* Slate Gray */
   text-decoration: none;
   border-radius: 6px;
   font-size: 1.2rem;
@@ -182,7 +239,7 @@ body {
 }
 
 .error-link:hover {
-  background-color: #0056b3;
+  background-color: #6a5acd; /* Slightly darker Slate Gray */
   transform: scale(1.05);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
@@ -207,7 +264,13 @@ body {
   }
 
   .welcome-title {
-    font-size: 2.5rem;
+    font-size: 2.5rem; /* Adjust as needed */
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .carousel-caption {
+    font-size: 1rem;
   }
 
   .home-link {
