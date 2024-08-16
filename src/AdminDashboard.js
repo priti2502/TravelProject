@@ -53,7 +53,6 @@ const UserForm = ({ onSubmit, user, handleInputChange, buttonText, onClose, role
       placeholder="Mobile Number"
       required
     />
-
     <select
       value={user.departmentId || ''}
       onChange={(e) => handleInputChange(e, 'departmentId')}
@@ -142,27 +141,29 @@ function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [departments, setDepartments] = useState([]);
-  const [managers, setManagers] = useState([]); // New state for managers
+  const [managers, setManagers] = useState([]);
   const [newUser, setNewUser] = useState({ email: '', roleId: '', firstName: '', lastName: '', departmentId: '', managerId: '' });
   const [editingUser, setEditingUser] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [usersResponse, rolesResponse, departmentsResponse, managersResponse] = await Promise.all([
-          axios.get('https://localhost:7041/api/User'),
+          axios.get('https://localhost:7041/api/Admin'),
           axios.get('https://localhost:7041/api/Role'),
           axios.get('https://localhost:7041/api/Department/departments'),
-          axios.get('https://localhost:7041/api/User/managers') // Add endpoint for managers
+          axios.get('https://localhost:7041/api/Admin/managers')
         ]);
         setUsers(usersResponse.data);
         setRoles(rolesResponse.data);
         setDepartments(departmentsResponse.data);
-        setManagers(managersResponse.data); // Set the managers
+        setManagers(managersResponse.data);
       } catch (error) {
         console.error('Error fetching data:', error);
+        setMessage('Failed to fetch data.');
       }
     };
 
@@ -171,18 +172,19 @@ function AdminDashboard() {
 
   const addUser = async () => {
     if (!newUser.email || !newUser.roleId) {
-      alert('Please fill in all required fields.');
+      setMessage('Please fill in all required fields.');
       return;
     }
 
     try {
-      const response = await axios.post('https://localhost:7041/api/User', newUser);
+      const response = await axios.post('https://localhost:7041/api/Admin', newUser);
       setUsers([...users, response.data]);
       setNewUser({ email: '', roleId: '', firstName: '', lastName: '', departmentId: '', managerId: '' });
       setShowAddForm(false);
+      setMessage('User added successfully.');
     } catch (error) {
       console.error('Error adding user:', error.response?.data || error.message);
-      alert('Failed to add user. Please try again.');
+      setMessage('Failed to add user. Please try again.');
     }
   };
 
@@ -190,8 +192,10 @@ function AdminDashboard() {
     try {
       await axios.delete(`https://localhost:7041/api/User/${id}`);
       setUsers(users.filter((user) => user.id !== id));
+      setMessage('User deleted successfully.');
     } catch (error) {
       console.error('Error deleting user:', error);
+      setMessage('Failed to delete user. Please try again.');
     }
   };
 
@@ -200,23 +204,40 @@ function AdminDashboard() {
     setShowEditForm(true);
   };
 
-  const saveEdit = async (id) => {
+  const saveEdit = async () => {
     if (!editingUser) return;
+
+    const payload = {
+      email: editingUser.email,
+      firstName: editingUser.firstName,
+      lastName: editingUser.lastName,
+      address: editingUser.address,
+      password: editingUser.password,
+      mobileNum: editingUser.mobileNum,
+      departmentId: editingUser.departmentId,
+      roleId: editingUser.roleId,
+      managerId: editingUser.managerId
+    };
+
     try {
-      await axios.put(`https://localhost:7041/api/User/${editingUser.id}`, editingUser);
-      setUsers(users.map((user) => (user.id === editingUser.id ? editingUser : user)));
+      console.log("error")
+      await axios.put(`https://localhost:7041/api/Admin/${editingUser.email}`, payload);
+   
       setEditingUser(null);
       setShowEditForm(false);
+      setMessage('User updated successfully.');
     } catch (error) {
       console.error('Error saving user edit:', error.response?.data || error.message);
+      setMessage('Failed to update user. Please try again.');
     }
   };
 
   const handleInputChange = (e, field) => {
+    const { value } = e.target;
     if (editingUser) {
-      setEditingUser({ ...editingUser, [field]: e.target.value });
+      setEditingUser(prev => ({ ...prev, [field]: value }));
     } else {
-      setNewUser({ ...newUser, [field]: e.target.value });
+      setNewUser(prev => ({ ...prev, [field]: value }));
     }
   };
 
@@ -226,58 +247,50 @@ function AdminDashboard() {
   };
 
   const toggleAddForm = () => {
-    setShowAddForm(!showAddForm);
+    setShowAddForm(prev => !prev);
   };
 
   return (
     <div className="admin-dashboard">
-     
+      {message && <div className="message">{message}</div>} {/* Display the message */}
 
       <div className="dashboard-options">
         <button className="toggle-form-button" onClick={toggleAddForm}>
-          {showAddForm ? 'Cancel' : 'Add User'}
+          {showAddForm ? 'Close Add User Form' : 'Add User'}
         </button>
-        {showAddForm && (
-          <div className="add-form">
-            
-            <UserForm
-              onSubmit={addUser}
-              user={newUser}
-              handleInputChange={handleInputChange}
-              buttonText="Add User"
-              onClose={toggleAddForm}
-              roles={roles}
-              departments={departments}
-              managers={managers} // Pass managers
-            />
-          </div>
-        )}
       </div>
 
-      <div className="dashboard-options">
-        
-        <UserTable
-          users={users}
-          startEditingUser={startEditingUser}
-          deleteUser={deleteUser}
+      {showAddForm && (
+        <UserForm
+          onSubmit={addUser}
+          user={newUser}
+          handleInputChange={handleInputChange}
+          buttonText="Add User"
+          onClose={() => setShowAddForm(false)}
+          roles={roles}
+          departments={departments}
+          managers={managers}
         />
-      </div>
-
-      {showEditForm && (
-        <div className="dashboard-options edit-form">
-          <h3>Edit User</h3>
-          <UserForm
-            onSubmit={saveEdit}
-            user={editingUser}
-            handleInputChange={handleInputChange}
-            buttonText="Save"
-            onClose={closeEditForm}
-            roles={roles}
-            departments={departments}
-            managers={managers} // Pass managers
-          />
-        </div>
       )}
+
+      {showEditForm && editingUser && (
+        <UserForm
+          onSubmit={saveEdit}
+          user={editingUser}
+          handleInputChange={handleInputChange}
+          buttonText="Save Changes"
+          onClose={closeEditForm}
+          roles={roles}
+          departments={departments}
+          managers={managers}
+        />
+      )}
+
+      <UserTable
+        users={users}
+        startEditingUser={startEditingUser}
+        deleteUser={deleteUser}
+      />
     </div>
   );
 }
