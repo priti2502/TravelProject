@@ -12,14 +12,14 @@ import './App.css';
 function Navbar() {
   const location = useLocation();
   const isBackButtonVisible = location.pathname !== '/';
-  const isLoggedIn = true; // Simulated logged-in state
+  const isLoggedIn = true; // Simulated logged-in state from local storage
   const userRole = 'admin'; // Simulated user role
 
   return (
     <nav className="navbar">
      
       <div className="navbar-center">
-        <span className="navbar-title">Welcome to Abstract's Travel Page</span>
+        <span className="navbar-title">Abstract's Travel Page</span>
       </div>
       <div className="navbar-right">
         {isLoggedIn ? (
@@ -27,7 +27,7 @@ function Navbar() {
             <Link className="nav-link" to="/">Home</Link>
             {userRole === 'manager' && <Link className="nav-link" to="/dashboard/manager">Manager Dashboard</Link>}
             {userRole === 'travel-admin' && <Link className="nav-link" to="/dashboard/travel-admin">Travel Admin Dashboard</Link>}
-            <Link className="nav-link" to="/contact">Contact</Link>
+           
             <Link className="nav-link" to="/login">Login</Link>
           </>
         ) : (
@@ -44,7 +44,7 @@ function Home() {
   return (
     <div className="home-container">
       <div className="carousel-container">
-        {/* <Carousel
+         <Carousel
           className="carousel"
           controls={true} // Enable navigation arrows
           indicators={false}
@@ -89,7 +89,7 @@ function Home() {
               </p>
             </Carousel.Caption>
           </Carousel.Item>
-        </Carousel> */}
+        </Carousel> 
       </div>
     </div>
   );

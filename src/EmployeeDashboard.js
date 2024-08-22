@@ -20,8 +20,8 @@ const EmployeeDashboard = () => {
     const [projects, setProjects] = useState([]);
     const [departments, setDepartments] = useState([]);
 
+    // Fetch projects and departments for dropdowns
     useEffect(() => {
-        // Fetch projects and departments for dropdowns
         axios.get('https://localhost:7075/api/Project')
             .then(response => setProjects(response.data))
             .catch(error => console.error('Error fetching projects:', error));
@@ -86,6 +86,7 @@ const EmployeeDashboard = () => {
                         name="userId"
                         value={formData.userId}
                         onChange={handleChange}
+                        required
                     />
                 </label>
 
@@ -96,6 +97,7 @@ const EmployeeDashboard = () => {
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleChange}
+                        required
                     />
                 </label>
 
@@ -106,7 +108,25 @@ const EmployeeDashboard = () => {
                         name="lastName"
                         value={formData.lastName}
                         onChange={handleChange}
+                        required
                     />
+                </label>
+
+                <label>
+                    Department:
+                    <select
+                        name="departmentId"
+                        value={formData.departmentId}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value="">Select a department</option>
+                        {departments.map(department => (
+                            <option key={department.departmentId} value={department.departmentId}>
+                                {department.departmentName}
+                            </option>
+                        ))}
+                    </select>
                 </label>
 
                 <label>
@@ -121,22 +141,6 @@ const EmployeeDashboard = () => {
                         {projects.map(project => (
                             <option key={project.projectId} value={project.projectId}>
                                 {project.projectName}
-                            </option>
-                        ))}
-                    </select>
-                </label>
-
-                <label>
-                    Department:
-                    <select
-                        name="departmentId"
-                        value={formData.departmentId}
-                        onChange={handleChange}
-                    >
-                        <option value="">Select a department</option>
-                        {departments.map(department => (
-                            <option key={department.departmentId} value={department.departmentId}>
-                                {department.departmentName}
                             </option>
                         ))}
                     </select>

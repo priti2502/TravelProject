@@ -1,92 +1,71 @@
-// src/ManagerDashboard.js
-
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './ManagerDashboard.css';
 
-const RequestItem = ({ request, onSelect, isSelected }) => (
-  <li className={`request-item ${isSelected ? 'selected' : ''}`}>
-    <div className="request-info">
-      {request.employeeName} - {request.projectName} - {request.status}
-    </div>
-    <div className="request-actions">
-      <button className="select-button" onClick={onSelect}>Select</button>
-    </div>
-  </li>
-);
+const ManagerDashboard = () => {
+    const [requests, setRequests] = useState([]);
 
-const ActionSection = ({ onCommentChange, onRequestAction, comment, onClose }) => (
-  <div className="action-section">
-    <textarea
-      placeholder="Enter comments"
-      value={comment}
-      onChange={(e) => onCommentChange(e.target.value)}
-    />
-    <div className="action-buttons">
-      <button onClick={() => onRequestAction('Approved')}>Approve</button>
-      <button onClick={() => onRequestAction('Disapproved')}>Disapprove</button>
-      <button onClick={() => onRequestAction('Returned')}>Return</button>
-    </div>
-    <button className="close-action" onClick={onClose}>Close</button>
-  </div>
-);
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const response = await axios.get('/api/manager/dashboard');
+                setRequests(response.data.requests);
+            } catch (error) {
+                console.error('Error fetching dashboard data', error);
+            }
+        }
 
-function ManagerDashboard() {
-  const [requests, setRequests] = useState([]);
-  const [selectedRequest, setSelectedRequest] = useState(null);
-  const [comment, setComment] = useState('');
+        fetchData();
+    }, []);
 
-  useEffect(() => {
-    const storedRequests = JSON.parse(localStorage.getItem('travelRequests')) || [];
-    setRequests(storedRequests);
-  }, []);
+    const handleAction = async (id, action) => {
+        const comment = prompt(`Enter comments for ${action}`);
+        if (!comment) return;
 
-  const handleRequestAction = (action) => {
-    if (!comment) {
-      alert('Comments cannot be left blank.');
-      return;
-    }
+        try {
+            await axios.post(`/api/manager/requests/${id}/${action}`, { comments: comment });
+            alert(`${action} action completed`);
+            // Refresh the dashboard data
+            const response = await axios.get('/api/manager/dashboard');
+            setRequests(response.data.requests);
+        } catch (error) {
+            console.error(`Error performing ${action} action`, error);
+        }
+    };
 
-    const updatedRequests = requests.map(req =>
-      req.id === selectedRequest ? { ...req, status: action, comments: comment } : req
+    return (
+        <div>
+            <h1>Manager Dashboard</h1>
+            <table border={2}>
+                <thead>
+                    <tr>
+                        <th>Request ID</th>
+                        <th>Employee</th>
+                        <th>Project</th>
+                        <th>Status</th>
+                        <th>Comments</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {requests.map((request) => (
+                        <tr key={request.requestId}>
+                            <td>{request.requestId}</td>
+                            <td>{request.employee.firstName} {request.employee.lastName}</td>
+                            <td>{request.project.projectName}</td>
+                            <td>{request.status}</td>
+                            <td>{request.comments}</td>
+                            <td>
+                                <button onClick={() => handleAction(request.requestId, 'approve')}>Approve</button>
+                                <button onClick={() => handleAction(request.requestId, 'disapprove')}>Disapprove</button>
+                                <button onClick={() => handleAction(request.requestId, 'return')}>Return to Employee</button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
     );
-    
-    setRequests(updatedRequests);
-    localStorage.setItem('travelRequests', JSON.stringify(updatedRequests));
-    sendNotification(selectedRequest, action);
-
-    setSelectedRequest(null);
-    setComment('');
-  };
-
-  const sendNotification = (id, action) => {
-    console.log(`Notification: Request ID ${id} has been ${action}.`);
-    // Integrate your notification logic here
-  };
-
-  return (
-    <div className="manager-dashboard">
-      <h2>Manager Dashboard</h2>
-      <h3>Pending Requests</h3>
-      <ul className="request-list">
-        {requests.map(request => (
-          <RequestItem
-            key={request.id}
-            request={request}
-            isSelected={selectedRequest === request.id}
-            onSelect={() => setSelectedRequest(request.id)}
-          />
-        ))}
-      </ul>
-      {selectedRequest && (
-        <ActionSection
-          comment={comment}
-          onCommentChange={setComment}
-          onRequestAction={handleRequestAction}
-          onClose={() => setSelectedRequest(null)}
-        />
-      )}
-    </div>
-  );
-}
+};
 
 export default ManagerDashboard;

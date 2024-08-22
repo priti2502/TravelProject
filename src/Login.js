@@ -23,6 +23,7 @@ const Login = () => {
         try {
             const response = await axios.post('https://localhost:7075/api/Login', formData);
             if (response.status === 200) {
+                console.log(response.data)
                 const { token } = response.data; // Extract token from response
                 localStorage.setItem('token', token); // Store the token in local storage
 
@@ -32,15 +33,17 @@ const Login = () => {
                 const decodedToken = jwtDecode(token);
                 console.log('Decoded Token:', decodedToken);
 
-                const id = decodedToken.sid; // Extract user ID
+                const id = decodedToken.userid;
+                 // Extract user ID
+                 console.log(id);
                 const role = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']; // Extract role using correct key
                 
 
             if (response.status === 200) {
-                const { roleId} = response.data; 
+                const roleId = decodedToken.roleId; 
                 console.log(roleId)
                 
-                if (roleId === 4) {
+                if (roleId === '4') {
                     navigate('/dashboard/employee'); 
                 } else if (roleId === 3) {
                     navigate('/dashboard/manager'); 
