@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import {jwtDecode} from 'jwt-decode';
 import './Login.css';
 
 const Login = () => {
@@ -20,8 +21,20 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post('https://localhost:7041/api/Login/login', formData);
-            
+            const response = await axios.post('https://localhost:7075/api/Login', formData);
+            if (response.status === 200) {
+                const { token } = response.data; // Extract token from response
+                localStorage.setItem('token', token); // Store the token in local storage
+
+
+
+                // Decode the token using jwt-decode
+                const decodedToken = jwtDecode(token);
+                console.log('Decoded Token:', decodedToken);
+
+                const id = decodedToken.sid; // Extract user ID
+                const role = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']; // Extract role using correct key
+                
 
             if (response.status === 200) {
                 const { roleId} = response.data; 
@@ -39,10 +52,13 @@ const Login = () => {
                     setMessage('Access restricted');
                 }
             }
-        } catch (error) {
-            setMessage('Login failed');
         }
-    };
+    }
+    catch (error) {
+        console.error(error);
+        setMessage('Login failed');
+    }
+}
 
     return (
         <div className="login-container">

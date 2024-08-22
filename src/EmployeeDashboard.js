@@ -1,136 +1,205 @@
+// src/components/EmployeeDashboard.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './EmployeeDashboard.css'
+import './EmployeeDashboard.css';
 
-const EmployeeModule = () => {
-  const [requests, setRequests] = useState([]);
-  const [formData, setFormData] = useState({
-    projectId: '',
-    locationId: '',
-    departmentName: '',
-    travelReason: '',
-    bookingType: '',
-    aadharCard: '',
-    passportNumber: '',
-    visaFilePath: '',
-    travelDate: '',
-    status: 'Pending',
-  });
-  const [isCreatingRequest, setIsCreatingRequest] = useState(false);
+const EmployeeDashboard = () => {
+    const [formData, setFormData] = useState({
+        userId: '',
+        firstName: '',
+        lastName: '',
+        projectId: '',
+        departmentId: '',
+        reasonForTravel: '',
+        fromDate: '',
+        toDate: '',
+        fromLocation: '',
+        toLocation: ''
+    });
 
-  useEffect(() => {
-    // Fetch user's travel requests
-    axios.get('/api/travelrequest/user/1') // Replace with actual user ID
-      .then(response => {
-        setRequests(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching requests:', error);
-      });
-  }, []);
+    const [projects, setProjects] = useState([]);
+    const [departments, setDepartments] = useState([]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevData => ({ ...prevData, [name]: value }));
-  };
+    useEffect(() => {
+        // Fetch projects and departments for dropdowns
+        axios.get('https://localhost:7075/api/Project')
+            .then(response => setProjects(response.data))
+            .catch(error => console.error('Error fetching projects:', error));
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    axios.post('/api/travelrequest', formData)
-      .then(response => {
-        alert('Request submitted successfully');
-        setIsCreatingRequest(false);
-        // Refresh the requests list
-        axios.get('/api/travelrequest/user/1')
-          .then(response => setRequests(response.data))
-          .catch(error => console.error('Error fetching requests:', error));
-      })
-      .catch(error => {
-        console.error('Error submitting request:', error);
-      });
-  };
+        axios.get('https://localhost:7075/api/Department')
+            .then(response => setDepartments(response.data))
+            .catch(error => console.error('Error fetching departments:', error));
+    }, []);
 
-  return (
-    <div>
-      <h1>Employee Module</h1>
-      <button onClick={() => setIsCreatingRequest(true)}>Create New Travel Request</button>
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
 
-      {isCreatingRequest ? (
-        <div>
-          <h2>Create Travel Request</h2>
-          <form onSubmit={handleSubmit}>
-            <label>
-              Project ID:
-              <input type="text" name="projectId" value={formData.projectId} onChange={handleChange} />
-            </label>
-            <label>
-              Location ID:
-              <input type="text" name="locationId" value={formData.locationId} onChange={handleChange} />
-            </label>
-            <label>
-              Department Name:
-              <input type="text" name="departmentName" value={formData.departmentName} onChange={handleChange} />
-            </label>
-            <label>
-              Travel Reason:
-              <input type="text" name="travelReason" value={formData.travelReason} onChange={handleChange} />
-            </label>
-            <label>
-              Booking Type:
-              <select name="bookingType" value={formData.bookingType} onChange={handleChange}>
-                <option value="Air">Air</option>
-                <option value="Hotel">Hotel</option>
-                <option value="Both">Both</option>
-              </select>
-            </label>
-            <label>
-              Aadhar Card:
-              <input type="text" name="aadharCard" value={formData.aadharCard} onChange={handleChange} />
-            </label>
-            <label>
-              Passport Number:
-              <input type="text" name="passportNumber" value={formData.passportNumber} onChange={handleChange} />
-            </label>
-            <label>
-              Visa File Path:
-              <input type="text" name="visaFilePath" value={formData.visaFilePath} onChange={handleChange} />
-            </label>
-            <label>
-              Travel Date:
-              <input type="date" name="travelDate" value={formData.travelDate} onChange={handleChange} />
-            </label>
-            <button type="submit">Submit Request</button>
-          </form>
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        const requestData = {
+            userId: formData.userId,
+            projectId: formData.projectId,
+            departmentId: formData.departmentId,
+            reasonForTravel: formData.reasonForTravel,
+            fromDate: formData.fromDate,
+            toDate: formData.toDate,
+            fromLocation: formData.fromLocation,
+            toLocation: formData.toLocation
+        };
+
+        axios.post('https://localhost:7075/api/TravelRequest', requestData)
+            .then(response => {
+                alert('Travel Request submitted successfully!');
+                setFormData({
+                    userId: '',
+                    firstName: '',
+                    lastName: '',
+                    projectId: '',
+                    departmentId: '',
+                    reasonForTravel: '',
+                    fromDate: '',
+                    toDate: '',
+                    fromLocation: '',
+                    toLocation: ''
+                });
+            })
+            .catch(error => {
+                console.error('There was an error submitting the travel request!', error);
+            });
+    };
+
+    return (
+        <div className="travel-request-form-container">
+            <form className="travel-request-form" onSubmit={handleSubmit}>
+                <h2>Travel Request Form</h2>
+
+                <label>
+                    User ID:
+                    <input
+                        type="number"
+                        name="userId"
+                        value={formData.userId}
+                        onChange={handleChange}
+                    />
+                </label>
+
+                <label>
+                    First Name:
+                    <input
+                        type="text"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                    />
+                </label>
+
+                <label>
+                    Last Name:
+                    <input
+                        type="text"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                    />
+                </label>
+
+                <label>
+                    Project:
+                    <select
+                        name="projectId"
+                        value={formData.projectId}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value="">Select a project</option>
+                        {projects.map(project => (
+                            <option key={project.projectId} value={project.projectId}>
+                                {project.projectName}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+
+                <label>
+                    Department:
+                    <select
+                        name="departmentId"
+                        value={formData.departmentId}
+                        onChange={handleChange}
+                    >
+                        <option value="">Select a department</option>
+                        {departments.map(department => (
+                            <option key={department.departmentId} value={department.departmentId}>
+                                {department.departmentName}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+
+                <label>
+                    Reason for Travel:
+                    <textarea
+                        name="reasonForTravel"
+                        value={formData.reasonForTravel}
+                        onChange={handleChange}
+                        required
+                    />
+                </label>
+
+                <label>
+                    From Date:
+                    <input
+                        type="date"
+                        name="fromDate"
+                        value={formData.fromDate}
+                        onChange={handleChange}
+                        required
+                    />
+                </label>
+
+                <label>
+                    To Date:
+                    <input
+                        type="date"
+                        name="toDate"
+                        value={formData.toDate}
+                        onChange={handleChange}
+                        required
+                    />
+                </label>
+
+                <label>
+                    From Location:
+                    <input
+                        type="text"
+                        name="fromLocation"
+                        value={formData.fromLocation}
+                        onChange={handleChange}
+                        required
+                    />
+                </label>
+
+                <label>
+                    To Location:
+                    <input
+                        type="text"
+                        name="toLocation"
+                        value={formData.toLocation}
+                        onChange={handleChange}
+                        required
+                    />
+                </label>
+
+                <button type="submit">Submit Request</button>
+            </form>
         </div>
-      ) : (
-        <div>
-          <h2>Your Requests</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Request ID</th>
-                <th>Project</th>
-                <th>Location</th>
-                <th>Travel Reason</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {requests.map(request => (
-                <tr key={request.id}>
-                  <td>{request.id}</td>
-                  <td>{request.project.projectName}</td>
-                  <td>{request.location.fromLocation} to {request.location.toLocation}</td>
-                  <td>{request.travelReason}</td>
-                  <td>{request.status}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
-  );
+    );
 };
 
-export default EmployeeModule;
+export default EmployeeDashboard;

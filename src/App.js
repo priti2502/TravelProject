@@ -17,13 +17,7 @@ function Navbar() {
 
   return (
     <nav className="navbar">
-      <div className="navbar-left">
-        {isBackButtonVisible && (
-          <button className="back-button" onClick={() => window.history.back()}>
-            &#9664; Back
-          </button>
-        )}
-      </div>
+     
       <div className="navbar-center">
         <span className="navbar-title">Welcome to Abstract's Travel Page</span>
       </div>
@@ -38,7 +32,7 @@ function Navbar() {
           </>
         ) : (
           <>
-            <Link className="nav-link" to="/login">Login</Link>
+            <Link className="nav-link" to="/logout">Logout</Link>
           </>
         )}
       </div>
@@ -50,7 +44,7 @@ function Home() {
   return (
     <div className="home-container">
       <div className="carousel-container">
-        <Carousel
+        {/* <Carousel
           className="carousel"
           controls={true} // Enable navigation arrows
           indicators={false}
@@ -95,7 +89,7 @@ function Home() {
               </p>
             </Carousel.Caption>
           </Carousel.Item>
-        </Carousel>
+        </Carousel> */}
       </div>
     </div>
   );

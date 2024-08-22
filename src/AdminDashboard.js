@@ -3,7 +3,7 @@ import axios from 'axios';
 import './AdminDashboard.css';
 
 // UserForm Component
-const UserForm = ({ onSubmit, user, handleInputChange, buttonText, onClose, roles, departments, managers }) => (
+const UserForm = ({ user, handleInputChange, buttonText, onSubmit, onClose, roles, departments, managers }) => (
   <form
     className="user-form"
     onSubmit={(e) => {
@@ -30,21 +30,18 @@ const UserForm = ({ onSubmit, user, handleInputChange, buttonText, onClose, role
       value={user.lastName || ''}
       onChange={(e) => handleInputChange(e, 'lastName')}
       placeholder="Last Name"
-      required
     />
     <input
       type="text"
       value={user.address || ''}
       onChange={(e) => handleInputChange(e, 'address')}
       placeholder="Address"
-      required
     />
     <input
       type="password"
       value={user.password || ''}
       onChange={(e) => handleInputChange(e, 'password')}
       placeholder="Password"
-      required
     />
     <input
       type="tel"
@@ -56,7 +53,6 @@ const UserForm = ({ onSubmit, user, handleInputChange, buttonText, onClose, role
     <select
       value={user.departmentId || ''}
       onChange={(e) => handleInputChange(e, 'departmentId')}
-      placeholder="Department"
     >
       <option value="">Select Department</option>
       {departments.map(dept => (
@@ -68,7 +64,6 @@ const UserForm = ({ onSubmit, user, handleInputChange, buttonText, onClose, role
     <select
       value={user.roleId || ''}
       onChange={(e) => handleInputChange(e, 'roleId')}
-      placeholder="Role"
     >
       <option value="">Select Role</option>
       {roles.map(role => (
@@ -80,11 +75,10 @@ const UserForm = ({ onSubmit, user, handleInputChange, buttonText, onClose, role
     <select
       value={user.managerId || ''}
       onChange={(e) => handleInputChange(e, 'managerId')}
-      placeholder="Manager"
     >
       <option value="">Select Manager</option>
       {managers.map(manager => (
-        <option key={manager.id} value={manager.id}>
+        <option key={manager.userId} value={manager.userId}>
           {manager.firstName} {manager.lastName}
         </option>
       ))}
@@ -98,12 +92,11 @@ const UserForm = ({ onSubmit, user, handleInputChange, buttonText, onClose, role
   </form>
 );
 
-// UserTable Component
-const UserTable = ({ users, startEditingUser, deleteUser }) => (
+const UserTable = ({ users, deleteUser }) => (
   <table className="user-table">
     <thead>
       <tr>
-        <th>ID</th>
+        <th>User ID</th>
         <th>Email</th>
         <th>First Name</th>
         <th>Last Name</th>
@@ -114,9 +107,9 @@ const UserTable = ({ users, startEditingUser, deleteUser }) => (
       </tr>
     </thead>
     <tbody>
-      {users.map((user) => (
-        <tr key={user.id}>
-          <td>{user.id}</td>
+      {users.map(user => (
+        <tr key={user.userId}>
+          <td>{user.userId}</td>
           <td>{user.email}</td>
           <td>{user.firstName}</td>
           <td>{user.lastName}</td>
@@ -124,12 +117,7 @@ const UserTable = ({ users, startEditingUser, deleteUser }) => (
           <td>{user.manager ? `${user.manager.firstName} ${user.manager.lastName}` : 'N/A'}</td>
           <td>{user.role?.roleName || 'N/A'}</td>
           <td>
-            <button className="edit-button" onClick={() => startEditingUser(user)}>
-              Edit
-            </button>
-            <button className="delete-button" onClick={() => deleteUser(user.id)}>
-              Delete
-            </button>
+            <button className="delete-button" onClick={() => deleteUser(user.userId)}>Delete</button>
           </td>
         </tr>
       ))}
@@ -143,8 +131,6 @@ function AdminDashboard() {
   const [departments, setDepartments] = useState([]);
   const [managers, setManagers] = useState([]);
   const [newUser, setNewUser] = useState({ email: '', roleId: '', firstName: '', lastName: '', departmentId: '', managerId: '' });
-  const [editingUser, setEditingUser] = useState(null);
-  const [showEditForm, setShowEditForm] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -152,12 +138,12 @@ function AdminDashboard() {
     const fetchData = async () => {
       try {
         const [usersResponse, rolesResponse, departmentsResponse, managersResponse] = await Promise.all([
-          axios.get('https://localhost:7041/api/Admin'),
-          axios.get('https://localhost:7041/api/Role'),
-          axios.get('https://localhost:7041/api/Department/departments'),
-          axios.get('https://localhost:7041/api/Admin/managers')
+          axios.get('https://localhost:7075/api/User/users'),
+          axios.get('https://localhost:7075/api/Role'),
+          axios.get('https://localhost:7075/api/Department'),
+          axios.get('https://localhost:7075/api/User/managers')
         ]);
-        setUsers(usersResponse.data);
+        setUsers(usersResponse.data.map(user => ({ ...user, isEditing: false })));
         setRoles(rolesResponse.data);
         setDepartments(departmentsResponse.data);
         setManagers(managersResponse.data);
@@ -170,6 +156,10 @@ function AdminDashboard() {
     fetchData();
   }, []);
 
+  const handleInputChange = (e, field) => {
+    setNewUser(prev => ({ ...prev, [field]: e.target.value }));
+  };
+
   const addUser = async () => {
     if (!newUser.email || !newUser.roleId) {
       setMessage('Please fill in all required fields.');
@@ -177,8 +167,8 @@ function AdminDashboard() {
     }
 
     try {
-      const response = await axios.post('https://localhost:7041/api/Admin', newUser);
-      setUsers([...users, response.data]);
+      const response = await axios.post('https://localhost:7075/api/User/users', newUser);
+      setUsers([...users, { ...response.data, isEditing: false }]);
       setNewUser({ email: '', roleId: '', firstName: '', lastName: '', departmentId: '', managerId: '' });
       setShowAddForm(false);
       setMessage('User added successfully.');
@@ -188,10 +178,10 @@ function AdminDashboard() {
     }
   };
 
-  const deleteUser = async (id) => {
+  const deleteUser = async (userId) => {
     try {
-      await axios.delete(`https://localhost:7041/api/User/${id}`);
-      setUsers(users.filter((user) => user.id !== id));
+      await axios.delete(`https://localhost:7075/api/User/users/${userId}`);
+      setUsers(users.filter((user) => user.userId !== userId));
       setMessage('User deleted successfully.');
     } catch (error) {
       console.error('Error deleting user:', error);
@@ -199,96 +189,52 @@ function AdminDashboard() {
     }
   };
 
-  const startEditingUser = (user) => {
-    setEditingUser(user);
-    setShowEditForm(true);
+  const startEditingUser = (userId, field = null, value = null) => {
+    setUsers(users.map(user =>
+      user.userId === userId
+        ? { ...user, [field]: value, isEditing: field ? true : !user.isEditing }
+        : user
+    ));
   };
 
-  const saveEdit = async () => {
-    if (!editingUser) return;
+  const cancelEditing = (userId) => {
+    setUsers(users.map(user =>
+      user.userId === userId
+        ? { ...user, isEditing: false }
+        : user
+    ));
+  };
 
-    const payload = {
-      email: editingUser.email,
-      firstName: editingUser.firstName,
-      lastName: editingUser.lastName,
-      address: editingUser.address,
-      password: editingUser.password,
-      mobileNum: editingUser.mobileNum,
-      departmentId: editingUser.departmentId,
-      roleId: editingUser.roleId,
-      managerId: editingUser.managerId
-    };
-
+  const saveUser = async (userId) => {
+    const user = users.find(user => user.userId === userId);
     try {
-      console.log("error")
-      await axios.put(`https://localhost:7041/api/Admin/${editingUser.email}`, payload);
-   
-      setEditingUser(null);
-      setShowEditForm(false);
+      await axios.put(`https://localhost:7075/api/User/users/${userId}`, user);
+      setUsers(users.map(u => (u.userId === userId ? { ...u, isEditing: false } : u)));
       setMessage('User updated successfully.');
     } catch (error) {
-      console.error('Error saving user edit:', error.response?.data || error.message);
+      console.error('Error updating user:', error);
       setMessage('Failed to update user. Please try again.');
     }
   };
 
-  const handleInputChange = (e, field) => {
-    const { value } = e.target;
-    if (editingUser) {
-      setEditingUser(prev => ({ ...prev, [field]: value }));
-    } else {
-      setNewUser(prev => ({ ...prev, [field]: value }));
-    }
-  };
-
-  const closeEditForm = () => {
-    setEditingUser(null);
-    setShowEditForm(false);
-  };
-
-  const toggleAddForm = () => {
-    setShowAddForm(prev => !prev);
-  };
-
   return (
     <div className="admin-dashboard">
-      {message && <div className="message">{message}</div>} {/* Display the message */}
-
-      <div className="dashboard-options">
-        <button className="toggle-form-button" onClick={toggleAddForm}>
-          {showAddForm ? 'Close Add User Form' : 'Add User'}
-        </button>
-      </div>
-
+      {message && <p className="message">{message}</p>}
+      <button className="add-button" onClick={() => setShowAddForm(true)}>Add User</button>
       {showAddForm && (
         <UserForm
-          onSubmit={addUser}
           user={newUser}
           handleInputChange={handleInputChange}
           buttonText="Add User"
+          onSubmit={addUser}
           onClose={() => setShowAddForm(false)}
           roles={roles}
           departments={departments}
           managers={managers}
         />
       )}
-
-      {showEditForm && editingUser && (
-        <UserForm
-          onSubmit={saveEdit}
-          user={editingUser}
-          handleInputChange={handleInputChange}
-          buttonText="Save Changes"
-          onClose={closeEditForm}
-          roles={roles}
-          departments={departments}
-          managers={managers}
-        />
-      )}
-
       <UserTable
         users={users}
-        startEditingUser={startEditingUser}
         deleteUser={deleteUser}
       />
     </div>
