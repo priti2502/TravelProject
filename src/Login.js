@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode'; // Correct import
 import './Login.css';
 
 const Login = () => {
@@ -23,45 +23,34 @@ const Login = () => {
         try {
             const response = await axios.post('https://localhost:7075/api/Login', formData);
             if (response.status === 200) {
-                console.log(response.data)
                 const { token } = response.data; // Extract token from response
                 localStorage.setItem('token', token); // Store the token in local storage
-
-
 
                 // Decode the token using jwt-decode
                 const decodedToken = jwtDecode(token);
                 console.log('Decoded Token:', decodedToken);
 
                 const id = decodedToken.userid;
-                 // Extract user ID
-                 console.log(id);
-                const role = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']; // Extract role using correct key
-                
-
-            if (response.status === 200) {
                 const roleId = decodedToken.roleId; 
-                console.log(roleId)
                 
+                // Navigate based on roleId
                 if (roleId === '4') {
                     navigate('/dashboard/employee'); 
-                } else if (roleId === 3) {
+                } else if (roleId === '3') {
                     navigate('/dashboard/manager'); 
-                } else if (roleId === 2) {
+                } else if (roleId === '2') {
                     navigate('/dashboard/travel-admin'); 
-                } else if (roleId === 1) {
+                } else if (roleId === '1') {
                     navigate('/dashboard/admin'); 
                 } else {
                     setMessage('Access restricted');
                 }
             }
+        } catch (error) {
+            console.error(error);
+            setMessage('Login failed');
         }
-    }
-    catch (error) {
-        console.error(error);
-        setMessage('Login failed');
-    }
-}
+    };
 
     return (
         <div className="login-container">

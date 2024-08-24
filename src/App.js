@@ -7,33 +7,53 @@ import ManagerDashboard from './ManagerDashboard';
 import TravelAdminDashboard from './TravelAdminDashboard';
 import Carousel from 'react-bootstrap/Carousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { jwtDecode } from 'jwt-decode';
 import './App.css';
 
 function Navbar() {
   const location = useLocation();
-  const isBackButtonVisible = location.pathname !== '/';
-  const isLoggedIn = true; // Simulated logged-in state from local storage
-  const userRole = 'admin'; // Simulated user role
+  const token = localStorage.getItem('token');
+  const isLoggedIn = !!token; // Check if token exists
+
+  // Decode the token if it exists
+  let userName = '';
+  let userRole = '';
+  if (isLoggedIn) {
+    try {
+      const decodedToken = jwtDecode(token);
+      userName = decodedToken.firstname || ''; // Extract username from the token
+      userRole = decodedToken.roleId || '';
+    } catch (error) {
+      console.error('Error decoding token:', error);
+    }
+  }
+
+  const isDashboardRoute = location.pathname.includes('/dashboard');
+  
+  const getWelcomeMessage = () => {
+    return userName ? `Welcome, ${userName}` : 'Welcome';
+  };
 
   return (
     <nav className="navbar">
-     
       <div className="navbar-center">
         <span className="navbar-title">Abstract's Travel Page</span>
+       
       </div>
       <div className="navbar-right">
+      <Link className="nav-link" to="/">Home</Link>
         {isLoggedIn ? (
-          <>
-            <Link className="nav-link" to="/">Home</Link>
-            {userRole === 'manager' && <Link className="nav-link" to="/dashboard/manager">Manager Dashboard</Link>}
-            {userRole === 'travel-admin' && <Link className="nav-link" to="/dashboard/travel-admin">Travel Admin Dashboard</Link>}
-           
-            <Link className="nav-link" to="/login">Login</Link>
-          </>
+          <Link className="nav-link" to="/" onClick={() => {
+            localStorage.clear();
+            window.location.reload(); 
+          }}>Logout</Link>
+          
         ) : (
-          <>
-            <Link className="nav-link" to="/logout">Logout</Link>
-          </>
+          
+          <Link className="nav-link" to="/login">Login</Link>
+        )}
+      {isLoggedIn && isDashboardRoute && (
+          <span className="navbar-welcome">{getWelcomeMessage()}</span>
         )}
       </div>
     </nav>

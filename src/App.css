@@ -1,11 +1,12 @@
 /* src/App.css */
 
+/* Existing styles */
 body {
   font-family: 'Arial', sans-serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-   background: url('/public/assets/img1.jpg') no-repeat center center fixed; 
+  background: url('/public/assets/img1.jpg') no-repeat center center fixed; 
   background-size: cover;
   color: #333;
 }
@@ -16,81 +17,6 @@ body {
   min-height: 100vh;
   padding-top: 70px; /* Add space for fixed Navbar */
 }
-
-.navbar {
-  position: fixed; /* Make Navbar fixed at the top */
-  top: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-  background-color: #2c3e50; /* Slate Gray */
-  color: white;
-  height: 70px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  transition: background-color 0.3s, box-shadow 0.3s;
-  z-index: 1000; /* Ensure it stays above other content */
-}
-
-.navbar:hover {
-  background-color: #34495e; /* Slightly darker Slate Gray */
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-}
-
-.navbar-left, .navbar-right {
-  display: flex;
-  align-items: center;
-}
-
-.navbar-center {
-  flex-grow: 1;
-  text-align: center;
-}
-
-.navbar-title {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #FFD700; /* Misty Blue */
-  transition: color 0.3s, transform 0.3s;
-}
-
-.navbar-title:hover {
-  color: #F0F8FF; /* Sunlit Gold */
-  transform: scale(1.05);
-}
-
-.nav-link {
-  color: #ecf0f1; /* Misty Blue */
-  text-decoration: none;
-  margin: 0 10px;
-  padding: 8px 16px;
-  border-radius: 4px;
-  transition: background-color 0.3s, color 0.3s, transform 0.3s;
-}
-
-.nav-link:hover {
-  background-color: #34495e; /* Slightly darker Slate Gray */
-  color: #F0F8FF; /* Misty Blue */
-  transform: translateY(-2px);
-}
-
-.back-button {
-  background: none;
-  border: none;
-  color: #F0F8FF; /* Misty Blue */
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: color 0.3s, transform 0.3s;
-}
-
-.back-button:hover {
-  color: #FFD700; /* Sunlit Gold */
-  transform: scale(1.1);
-}
-
-/* src/Home.css */
 
 .home-container {
   display: flex;
@@ -244,51 +170,60 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    height: auto;
-    padding: 10px;
-  }
+/* Updated Navbar styles */
+.navbar {
+  position: fixed; /* Fixed at the top */
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  background-color: #2c3e50; /* Slate Gray */
+  color: white;
+  height: 70px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000; /* Ensure it stays above other content */
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
 
-  .navbar-left, .navbar-right {
-    margin: 5px 0;
-  }
+.navbar-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #FFD700; /* Sunlit Gold */
+}
 
-  .navbar-center {
-    margin: 10px 0;
-  }
+.navbar-title:hover {
+  color: #F0F8FF; /* Light Blue */
+}
 
-  .home-container {
-    padding: 20px;
-  }
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
 
-  .welcome-title {
-    font-size: 2.5rem; /* Adjust as needed */
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  
-  .carousel-caption {
-    font-size: 1rem;
-  }
+.nav-link {
+  color: #ecf0f1; /* Misty Blue */
+  text-decoration: none;
+  margin: 0 10px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s, transform 0.3s;
+}
 
-  .home-link {
-    margin: 8px 15px;
-    padding: 12px 20px;
-    font-size: 1rem;
-  }
+.nav-link:hover {
+  background-color: #34495e; /* Slightly darker Slate Gray */
+  color: #F0F8FF; /* Light Blue */
+  transform: translateY(-2px);
+}
 
-  .error-page {
-    padding: 20px;
-  }
+.navbar-center {
+  flex-grow: 1;
+  text-align: left; /* Align title to the left */
+}
 
-  .error-page h1 {
-    font-size: 3rem;
-  }
-
-  .error-link {
-    padding: 10px 20px;
-    font-size: 1rem;
-  }
+.navbar-left {
+  display: flex;
+  align-items: center;
 }
