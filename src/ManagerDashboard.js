@@ -1,90 +1,115 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import {jwtDecode} from 'jwt-decode'; // Ensure proper import
-import './ManagerDashboard.css';
+import { jwtDecode } from 'jwt-decode';
+import './ManagerDashboard.css'; // Import the CSS file
 
-const ManagerDashboard = () => {
-    const [requests, setRequests] = useState([]);
+const ManagerRequests = () => {
+  const [requests, setRequests] = useState([]);
+  const [managerId, setManagerId] = useState(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const storedToken = localStorage.getItem('token');
-            if (storedToken) {
-                try {
-                    const decodedToken = jwtDecode(storedToken);
-                    const managerId = decodedToken.userid; // Ensure `userid` is the correct field
+  useEffect(() => {
+    const token = localStorage.getItem('token'); // Assuming the token is stored in localStorage
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setManagerId(decodedToken.userid);
+    }
+  }, []);
 
-                    // Fetch requests for the current manager
-                    const response = await axios.get(`https://localhost:7075/api/Manager/dashboard`);
-                    console.log("hi")
-                    setRequests(response.data.requests);
-                } catch (error) {
-                    console.error('Error decoding token or fetching dashboard data', error);
-                    localStorage.removeItem('token');
-                }
-            } else {
-                console.error('No token found');
-            }
-        };
+  useEffect(() => {
+    if (managerId) {
+      fetchPendingRequests(managerId);
+    }
+  }, [managerId]);
 
-        fetchData();
-    }, []);
+  const fetchPendingRequests = async (managerId) => {
+    try {
+      const response = await axios.get(`https://localhost:7075/api/Manager/${managerId}/Requests`);
+      setRequests(response.data);
+    } catch (error) {
+      console.error('Error fetching pending requests:', error);
+    }
+  };
 
-    const handleAction = async (id, action) => {
-        const comment = prompt(`Enter comments for ${action}`);
-        if (!comment) return;
-
-        try {
-            await axios.post(`https://localhost:7075/api/Manager/requests/${id}/${action}`, { comments: comment });
-            alert(`${action.charAt(0).toUpperCase() + action.slice(1)} action completed`);
-            // Refresh the dashboard data
-            const response = await axios.get(`https://localhost:7075/api/Manager/dashboard`);
-            setRequests(response.data.requests);
-        } catch (error) {
-            console.error(`Error performing ${action} action`, error);
-            alert(`Error performing ${action} action: ${error.message}`);
+  const handleApprove = async (travelRequestId) => {
+    console.log('Approving request with ID:', travelRequestId);
+    try {
+      const comments = prompt("Please enter any comments (optional):");
+      const response = await axios.put(`https://localhost:7075/api/Manager/ApproveRequest/${travelRequestId}`, 
+        { Comments: comments }, // Send as JSON
+        {
+          headers: {
+            'Content-Type': 'application/json', // Set Content-Type to application/json
+          },
         }
-    };
+      );
+      console.log('Approve Response:', response);
+      alert('Request approved successfully.');
+      fetchPendingRequests(managerId); // Refresh the list
+    } catch (error) {
+      console.error('Error approving request:', error.response ? error.response.data : error.message);
+    }
+  };
 
-    return (
-        <div className="manager-dashboard">
-            <h1>Manager Dashboard</h1>
-            <table className="request-table">
-                <thead>
-                    <tr>
-                        <th>Request ID</th>
-                        <th>Employee</th>
-                        <th>Project</th>
-                        <th>Status</th>
-                        <th>Comments</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {requests.length > 0 ? (
-                        requests.map((request) => (
-                            <tr key={request.travelRequestId}>
-                                <td>{request.travelRequestId}</td>
-                                <td>{request.user.firstName} {request.user.lastName}</td>
-                                <td>{request.project.projectName}</td>
-                                <td>{request.status}</td>
-                                <td>{request.comments}</td>
-                                <td>
-                                    <button className="action-button" onClick={() => handleAction(request.travelRequestId, 'approve')}>Approve</button>
-                                    <button className="action-button" onClick={() => handleAction(request.travelRequestId, 'disapprove')}>Disapprove</button>
-                                    <button className="return-button" onClick={() => handleAction(request.travelRequestId, 'return')}>Return to Employee</button>
-                                </td>
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="6">No requests available</td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-        </div>
-    );
+  const handleReject = async (travelRequestId) => {
+    console.log('Rejecting request with ID:', travelRequestId);
+    try {
+      const comments = prompt("Please enter your rejection comments:");
+      const response = await axios.put(`https://localhost:7075/api/Manager/RejectRequest/${travelRequestId}`, 
+        { Comments: comments }, // Send as JSON
+        {
+          headers: {
+            'Content-Type': 'application/json', // Set Content-Type to application/json
+          },
+        }
+      );
+      console.log('Reject Response:', response);
+      alert('Request rejected successfully.');
+      fetchPendingRequests(managerId); // Refresh the list
+    } catch (error) {
+      console.error('Error rejecting request:', error.response ? error.response.data : error.message);
+    }
+  };
+
+  return (
+    <div className="container">
+      <h2>Pending Travel Requests</h2>
+      {requests.length > 0 ? (
+        <table>
+          <thead>
+            <tr>
+              <th>Travel Request ID</th>
+              <th>Employee</th>
+              <th>Project</th>
+              <th>Reason for Travel</th>
+              <th>From</th>
+              <th>To</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {requests.map((request) => (
+              <tr key={request.travelRequestId}>
+                <td>{request.travelRequestId}</td>
+                <td>{request.user.firstName} {request.user.lastName}</td>
+                <td>{request.project.projectName}</td>
+                <td>{request.reasonForTravel}</td>
+                <td>{request.fromLocation} on {new Date(request.fromDate).toDateString()}</td>
+                <td>{request.toLocation} on {new Date(request.toDate).toDateString()}</td>
+                <td>{request.status}</td>
+                <td>
+                  <button className="approve-button" onClick={() => handleApprove(request.travelRequestId)}>Approve</button>
+                  <button className="reject-button" onClick={() => handleReject(request.travelRequestId)}>Reject</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p>No pending requests found.</p>
+      )}
+    </div>
+  );
 };
 
-export default ManagerDashboard;
+export default ManagerRequests;

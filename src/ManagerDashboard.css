@@ -1,75 +1,65 @@
-/* ManagerDashboard.css */
 
-/* General Styles */
-.manager-dashboard {
+
+.container {
   font-family: Arial, sans-serif;
   padding: 20px;
-  background-color: #f4f4f4; /* Light gray background for the whole dashboard */
+  background-color: #f4f4f4;
+ 
 }
 
-/* Dashboard Header */
-.manager-dashboard h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  justify-content: center;
-}
 
-/* Table */
-.request-table {
+table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
-  background-color: white; /* White background for the table */
+  background-color: white; /* Ensure the table background is white */
   border-radius: 5px;
   overflow: hidden;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.request-table th, .request-table td {
+th, td {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
 
-.request-table th {
-  background-color: #007bff; /* Blue background for table headers */
+th {
+  background-color: #007bff; /* Match login header color */
   color: white;
 }
 
-.request-table tr:nth-child(even) {
+tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
-.request-table tr:hover {
+tr:hover {
   background-color: #f1f1f1;
 }
 
-/* Buttons */
-.action-button {
-  background-color: #007bff; /* Match login button color */
+
+button {
+  background-color: #007bff; 
   color: white;
   border: none;
   padding: 5px 10px;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 14px;
   margin-right: 5px;
 }
 
-.action-button:hover {
-  background-color: #0056b3; /* Darker shade for hover effect */
+button.approve-button {
+  background-color: #0056b3; 
 }
 
-.return-button {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
+button.approve-button:hover {
+  background-color: #004494;
 }
 
-.return-button:hover {
+button.reject-button {
+  background-color: #dc3545; 
+}
+
+button.reject-button:hover {
   background-color: #c82333;
 }
