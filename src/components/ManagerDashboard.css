@@ -1,0 +1,83 @@
+/* ManagerDashboard.css */
+
+.manager-dashboard {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: white;
+  height: 100vh;
+
+}
+
+h1 {
+  color: black;
+  text-align: center;
+  font-weight: bolder;
+  margin: 20px;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  text-align: center;
+  color: black;
+  font-weight: bolder;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+
+.header{
+  background-color: #ffecb3
+}
+table, th, td {
+  border: 1px solid #ddd;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+}
+
+th {
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+button {
+  padding: 10px 15px;
+  margin: 0 5px;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.approve-button {
+  background-color: #4CAF50;
+  margin-right: 5px;
+}
+
+.reject-button {
+  background-color: #f44336; 
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+p {
+  text-align: center;
+  color: #777;
+}

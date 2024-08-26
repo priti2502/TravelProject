@@ -1,10 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link, useLocation } from 'react-router-dom';
-import Login from './Login';
-import EmployeeDashboard from './EmployeeDashboard';
-import AdminDashboard from './AdminDashboard';
-import ManagerDashboard from './ManagerDashboard';
-import TravelAdminDashboard from './TravelAdminDashboard';
+import Login from './components/Login';
+import EmployeeDashboard from './components/EmployeeDashboard';
+import AdminDashboard from './components/AdminDashboard';
+import ManagerDashboard from './components/ManagerDashboard';
+import TravelAdminDashboard from './components/TravelAdminDashboard';
 import Carousel from 'react-bootstrap/Carousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { jwtDecode } from 'jwt-decode';
@@ -63,7 +63,17 @@ function Navbar() {
 function Home() {
   return (
     <div className="home-container">
-      <div className="carousel-container">
+      <div className="landing-page">
+      <video autoPlay muted loop className="background-video">
+        <source src="./assets/video1.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <div className="landing-content">
+        <h1>Welcome to the Abstract's Travel App</h1>
+        <p>Experience a seamless and efficient travel management system.</p>
+      </div>
+    </div>
+      {/* <div className="carousel-container">
          <Carousel
           className="carousel"
           controls={true} // Enable navigation arrows
@@ -109,8 +119,8 @@ function Home() {
               </p>
             </Carousel.Caption>
           </Carousel.Item>
-        </Carousel> 
-      </div>
+        </Carousel>  */}
+   {/* </div> */}
     </div>
   );
 }
