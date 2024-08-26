@@ -254,8 +254,10 @@ const EmployeeDashboard = () => {
                             <th>To Date</th>
                             <th>From Location</th>
                             <th>To Location</th>
+                           
                             <th>Reason for Travel</th>
                             <th>Status</th>
+                            <th>Comments</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -269,6 +271,7 @@ const EmployeeDashboard = () => {
                             <td>{request.toLocation}</td>
                             <td>{request.reasonForTravel}</td>
                             <td>{request.status}</td>
+                            <td>{request.comments}</td>
                         </tr>
                         ))}
                     </tbody>

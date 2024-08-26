@@ -95,9 +95,9 @@ const TravelAdminDashboard = () => {
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>User ID</th>
-                            <th>Project ID</th>
-                            <th>Department ID</th>
+                            <th>User name</th>
+                            <th>Project Name</th>
+                            <th>Department Name</th>
                             <th>Reason for Travel</th>
                             <th>From Date</th>
                             <th>To Date</th>
@@ -114,9 +114,9 @@ const TravelAdminDashboard = () => {
                             travelRequests.map((request) => (
                                 <tr key={request.travelRequestId}>
                                     <td>{request.travelRequestId}</td>
-                                    <td>{request.userId}</td>
-                                    <td>{request.projectId}</td>
-                                    <td>{request.departmentId}</td>
+                                    <td>{request.user.firstName+" " +request.user.lastName}</td>
+                                    <td>{request.project.projectName}</td>
+                                    <td>{request.department.departmentName}</td>
                                     <td>{request.reasonForTravel}</td>
                                     <td>{new Date(request.fromDate).toLocaleDateString()}</td>
                                     <td>{new Date(request.toDate).toLocaleDateString()}</td>
